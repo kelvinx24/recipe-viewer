@@ -54,11 +54,11 @@ export class HttpClient {
     }
   }
 
-  get<T>(path: string, params?: Record<string, string | number | undefined>, headers?: Record<string, string>): Promise<T> {
+  async get<T>(path: string, params?: Record<string, string | number | undefined>, headers?: Record<string, string>): Promise<T> {
     return this.request<T>('GET', path, params, undefined, headers);
   }
 
-  post<T>(path: string, body?: unknown, params?: Record<string, string | number | undefined>, headers?: Record<string, string>): Promise<T> {
+  async post<T>(path: string, body?: unknown, params?: Record<string, string | number | undefined>, headers?: Record<string, string>): Promise<T> {
     return this.request<T>('POST', path, params, body, headers);
   }
 }

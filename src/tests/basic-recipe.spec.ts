@@ -24,11 +24,9 @@ describe('Basic Recipe Unit Tests', () => {
         expect(exampleRecipe.steps.length).toBe(0);
 
         let someStep: string = "Turn on stove";
-        exampleRecipe.addStepToEnd(someStep)
-        expect(exampleRecipe.steps.length).toBe(1);
+        exampleRecipe.addStepToEnd(someStep);
 
-        let firstStep: string = exampleRecipe.steps[0];     
-        expect(firstStep).toBe(someStep);
+        expect(exampleRecipe.steps).toBe(someStep)
     })
 
     it.each([
@@ -50,20 +48,18 @@ describe('Basic Recipe Unit Tests', () => {
         expect(emptyCopyRecipe).not.toBe(exampleRecipe);  
 
         expect(emptyCopyRecipe.name).toBe(exampleRecipe.name);
-        expect(emptyCopyRecipe.ingredients).not.toBe(exampleRecipe.ingredients);
-        expect(emptyCopyRecipe.ingredients.length).toBe(0);
-        expect(emptyCopyRecipe.steps).not.toBe(exampleRecipe.steps);
-        expect(emptyCopyRecipe.steps.length).toBe(0);
+        expect(emptyCopyRecipe.ingredientsText).toBe("");
+        expect(emptyCopyRecipe.stepsText).toBe("");
         expect(emptyCopyRecipe.rating).toBe(0);
 
         exampleRecipe.addStepToEnd("Eat pie");
-        expect(emptyCopyRecipe.steps.length).toBe(0);
+        expect(emptyCopyRecipe.stepsText).toBe("");
 
         let copyRecipe: Recipe = exampleRecipe.copy();
         expect(copyRecipe).not.toBe(exampleRecipe);
         expect(copyRecipe.name).toBe(exampleRecipe.name);
-        expect(copyRecipe.ingredients.length).toBe(0);
-        expect(copyRecipe.steps.length).toBe(1);
+        expect(copyRecipe.ingredientsText).toBe("");
+        expect(copyRecipe.stepsText).toBe("Eat pie");
         expect(copyRecipe.rating).toBe(0);
     })
 

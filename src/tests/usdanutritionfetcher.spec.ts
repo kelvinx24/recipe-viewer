@@ -16,7 +16,7 @@ vi.mock("../models/http-client.model", () => {
   };
 });
 
-vi.spyOn(HttpClient.prototype, "post").mockResolvedValue({flaming: "yes"});
+// vi.spyOn(HttpClient.prototype, "post").mockResolvedValue({flaming: "yes"});
 
 
 describe("UsdaNutritionFetcher", () => {
@@ -47,12 +47,13 @@ describe("UsdaNutritionFetcher", () => {
       },
     };
 
-    getMock.mockResolvedValue(fakeResponse);
+    const promiseFakeResponse = Promise.resolve(fakeResponse);
 
-    const result = await fetcher.getFoodById(2057648);
+    getMock.mockResolvedValue(promiseFakeResponse);
+
+    await expect(fetcher.getFoodById(2057648)).resolves.toEqual(fakeResponse);
 
     expect(getMock).toHaveBeenCalledWith("food/2057648", { format: "full" });
-    expect(result).toEqual(fakeResponse);
   });
 
   it("should use provided format parameter when specified", async () => {
@@ -68,16 +69,15 @@ describe("UsdaNutritionFetcher", () => {
 
     getMock.mockResolvedValue(fakeResponse);
 
-    const result = await fetcher.getFoodById(12345, "abridged");
+    await expect(fetcher.getFoodById(12345, "abridged")).resolves.toEqual(fakeResponse);
 
     expect(getMock).toHaveBeenCalledWith("food/12345", { format: "abridged" });
-    expect(result).toEqual(fakeResponse);
   });
 
   it("should propagate errors from HttpClient", async () => {
     getMock.mockRejectedValue(new Error("Not found"));
 
-    await expect(fetcher.getFoodById(999)).rejects.toThrow("Not found");
+    await expect(fetcher.getFoodById(999)).rejects.toThrow("Failed to fetch food item with FDC ID 999: Error: Not found");
   });
 
   it("should search for a food by its name and return the id of the first food that matches", async () => {
@@ -94,15 +94,24 @@ describe("UsdaNutritionFetcher", () => {
     searchMock.mockResolvedValue(fakeSearchResponse);
 
     const testQuery: string = "French Fries";
-    const result = await fetcher.search(testQuery);
-    expect(searchMock).toHaveBeenCalledWith(testQuery);
-    expect(result).toBe(fakeSearchResponse);
+    const firstArg = "foods/search";
+    const secondArg = {
+      query: testQuery,
+      pageSize: 1,
+      pageNumber: 1
+    }
 
+    await expect(fetcher.search(testQuery)).resolves.toBe(fakeSearchResponse);
+    expect(searchMock).toHaveBeenCalledWith(firstArg, secondArg);
   });
 
-  it("search queries with no results should throw an error", async () => {
+  it("search queries with no results should throw an error", () => {
     searchMock.mockRejectedValue(new Error("Not found"));
 
-    expect(fetcher.search("something")).rejects.toThrow("Not found");
+    return expect(fetcher.search("something"))
+        .rejects
+        .toThrow("Search request failed: Error: Not found");
   });
+
+
 });
