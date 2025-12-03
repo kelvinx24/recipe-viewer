@@ -40,10 +40,11 @@ describe("UsdaNutritionFetcher", () => {
       fdcId: 20576,
       description: "Cheddar Cheese",
       servingSize: 28,
-      servingUnit: "g",
+      servingSizeUnit: "g",
       labelNutrients: {
         fat: { value: 8 },
         protein: { value: 6 },
+        carbohydrates: { value: 1 }
       },
     };
 
@@ -61,15 +62,17 @@ describe("UsdaNutritionFetcher", () => {
       fdcId: 30,
       description: "Mozzarella",
       servingSize: 30,
-      servingUnit: "g",
+      servingSizeUnit : "g",
       labelNutrients: {
         fat: { value: 7 },
+        protein: { value: 6 },
+        carbohydrates: { value: 1 }
       },
     };
 
     getMock.mockResolvedValue(fakeResponse);
 
-    await expect(fetcher.getFoodById(12345, "abridged")).resolves.toEqual(fakeResponse);
+    await expect(fetcher.getFoodById(12345, true)).resolves.toEqual(fakeResponse);
 
     expect(getMock).toHaveBeenCalledWith("food/12345", { format: "abridged" });
   });
@@ -113,5 +116,7 @@ describe("UsdaNutritionFetcher", () => {
         .toThrow("Search request failed: Error: Not found");
   });
 
+
+  
 
 });
