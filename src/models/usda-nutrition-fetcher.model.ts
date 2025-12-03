@@ -17,9 +17,13 @@ export class UsdaNutritionFetcher {
     }
 
     /** Get details for a single food item by FDC ID */
-    public async getFoodById(fdcId: number, format?: string): Promise<SimplifiedFoodInfo> {
+    public async getFoodById(fdcId: number, isAbridged?: boolean): Promise<SimplifiedFoodInfo> {
+        if (fdcId <= 0) {
+            throw new Error(`Invalid FDC ID specified: ${fdcId}`);
+        }
+
         const params = {
-            format: format ?? 'full'
+            format: isAbridged ? "abridged" : "full"
         };
 
 
@@ -33,6 +37,22 @@ export class UsdaNutritionFetcher {
     }
 
     public async search(query: string, pageSize: number = 1, pageNumber: number = 1): Promise<SimplifiedSearchInfo> {
+        if (query.length === 0) {
+            throw new Error("Search query cannot be empty");
+        }
+
+        if (query.length > 5000) {
+            throw new Error("Search query is too long");
+        }
+
+        if (pageSize < 1 || pageSize > 200) {
+            throw new Error("Page size must be at least 1 and at most 200");
+        }
+
+        if (pageNumber < 0) {
+            throw new Error("Page number must be at least 0");
+        }
+        
         const body = {
             query: query,
             pageSize: pageSize,

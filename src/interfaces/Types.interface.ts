@@ -1,9 +1,25 @@
+export interface USDALabelNutrient {
+  fat: { value: number };
+  protein: { value: number };
+  carbohydrates: { value: number };
+  fiber?: { value: number };
+  sugars?: { value: number };
+  saturatedFat?: { value: number };
+  calcium?: { value: number };
+  iron?: { value: number };
+  potassium?: { value: number };
+  sodium?: { value: number };
+  cholesterol?: { value: number };
+  vitaminD?: { value: number };
+  transFat?: { value: number };
+}
+
 export interface SimplifiedFoodInfo {
   fdcId: number;
   description: string;
   servingSize: number;
-  servingUnit: string;
-  labelNutrients: Record<string, { value: number }>;
+  servingSizeUnit: string;
+  labelNutrients: USDALabelNutrient;
 }
 
 export interface SimplifiedSearchInfo {
